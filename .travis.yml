@@ -22,3 +22,4 @@ after_success:
   - docker push vigorsolutions/multi-nginx
   - docker push vigorsolutions/multi-server
   - docker push vigorsolutions/multi-worker
+
