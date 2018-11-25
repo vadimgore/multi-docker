@@ -1,0 +1,24 @@
+sudo: required
+
+services:
+  - docker
+
+before_install:
+  - docker build -t vigorsolutions/react-test -f ./client/Dockerfile.dev ./client
+
+script:
+  - docker run vigorsolutions/react-test npm test -- --coverage
+
+after_success:
+  - docker build -t vigorsolutions/multi-client ./client
+  - docker build -t vigorsolutions/multi-nginx ./nginx
+  - docker build -t vigorsolutions/multi-server ./server
+  - docker build -t vigorsolutions/multi-worker ./worker
+  #Log in to docker CLI
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
+
+  #Push these images to docker hub
+  - docker push vigorsolutions/multi-client
+  - docker push vigorsolutions/multi-nginx
+  - docker push vigorsolutions/multi-server
+  - docker push vigorsolutions/multi-worker
